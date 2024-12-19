@@ -1,0 +1,18 @@
+{
+  "name": "written",
+  "version": "0.0.5",
+  "main": "src/main.js",
+  "repository": "https://github.com/StarLorder123/written.git",
+  "author": "DragonOrigin <lijinhao_wuxi@163.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-reloader": "^1.2.3"
+  },
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "reveal.js": "^5.1.0"
+  }
+}
