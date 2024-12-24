@@ -1,163 +1,205 @@
 <!doctype html>
 <html lang="en">
 
-	<head>
-		<meta charset="utf-8">
+<head>
+    <meta charset="utf-8">
 
-		<title>reveal.js - Markdown Example</title>
+    <title>reveal.js - Markdown Example</title>
 
-		<link rel="stylesheet" href="../node_modules/reveal.js/dist/reveal.css">
-		<link rel="stylesheet" href="../node_modules/reveal.js/dist/theme/white.css" id="theme">
+    <link rel="stylesheet" href="../node_modules/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="../node_modules/reveal.js/dist/theme/white.css" id="theme">
+    <link rel="stylesheet" href="../node_modules/reveal.js/plugin/highlight/monokai.css">
 
-        <link rel="stylesheet" href="../node_modules/reveal.js/plugin/highlight/monokai.css">
-	</head>
+    <!-- 引入 CodeMirror 的样式 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/theme/dracula.min.css">
+    <style>
+        .CodeMirror {
+            height: 100%;
+        }
 
-	<body>
+        .container {
+            display: flex;
+            height: 100%;
+        }
 
-		<div class="reveal">
+        .left {
+            flex: 0 0 40%;
+        }
 
-			<div class="slides">
+        .right {
+            flex: 0 0 60%;
+            height: 100%;
+        }
+    </style>
+</head>
 
-                <!-- Use external markdown resource, separate slides by three newlines; vertical slides by two newlines -->
-                <section data-markdown="markdown.md" data-separator="^\n\n\n" data-separator-vertical="^\n\n"></section>
-
-                <!-- Slides are separated by three dashes (the default) -->
-                <section data-markdown>
-                    <script type="text/template">
-                        ## Demo 1
-                        Slide 1
-                        ---
-                        ## Demo 1
-                        Slide 2
-                        ---
-                        ## Demo 1
-                        Slide 3
-                    </script>
-                </section>
-
-                <!-- Slides are separated by regexp matching newline + three dashes + newline, vertical slides identical but two dashes -->
-                <section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n--\n$">
-                    <script type="text/template">
-                        ## Demo 2
-                        Slide 1.1
-
-                        --
-
-                        ## Demo 2
-                        Slide 1.2
-
-                        ---
-
-                        ## Demo 2
-                        Slide 2
-                    </script>
-                </section>
-
-                <!-- No "extra" slides, since the separator can't be matched ("---" will become horizontal rulers) -->
-                <section data-markdown data-separator="$x">
-                    <script type="text/template">
-                        A
-
-                        ---
-
-                        B
-
-                        ---
-
-                        C
-                    </script>
-                </section>
-
-                <!-- Slide attributes -->
-                <section data-markdown>
-                    <script type="text/template">
-                        <!-- .slide: data-background="#000000" -->
-                        ## Slide attributes
-                    </script>
-                </section>
-
-                <!-- Element attributes -->
-                <section data-markdown>
-                    <script type="text/template">
-                        ## Element attributes
-                        - Item 1 <!-- .element: class="fragment" data-fragment-index="2" -->
-                        - Item 2 <!-- .element: class="fragment" data-fragment-index="1" -->
-                    </script>
-                </section>
-
-                <!-- Code -->
-                <section data-markdown>
-                    <script type="text/template">
-                        ```php [1|3-5]
-                        public function foo()
-                        {
-                            $foo = array(
-                                'bar' => 'bar'
-                            )
-                        }
-                        ```
-                    </script>
-                </section>
-
-                <!-- add optional line count offset, in this case 287 -->
-                <section data-markdown>
-                    <script type="text/template">
-                        ## echo.c
-
-                        ```c [287: 2|4,6]
-                        /* All of the options in this arg are valid, so handle them. */
-                        p = arg + 1;
-                        do {
-                            if (*p == 'n')
-                                nflag = 0;
-                            if (*p == 'e')
-                                eflag = '\\';
-                        } while (*++p); 
-                        ```
-                        [source](https://git.busybox.net/busybox/tree/coreutils/echo.c?h=1_36_stable#n287)
-                    </script>
-                </section>
-
-                <!-- Images -->
-                <section data-markdown>
-                    <script type="text/template">
-                        ![Sample image](https://s3.amazonaws.com/static.slid.es/logo/v2/slides-symbol-512x512.png)
-                    </script>
-                </section>
-
-                <!-- Math -->
-                <section data-markdown>
-					## The Lorenz Equations
-					`\[\begin{aligned}
-					\dot{x} &amp; = \sigma(y-x) \\
-					\dot{y} &amp; = \rho x - y - xz \\
-					\dot{z} &amp; = -\beta z + xy
-					\end{aligned} \]`
-                </section>
-
+<body>
+    <div class="container">
+        <div class="left">
+            <!-- 用于 CodeMirror 编辑器的 DOM 元素 -->
+            <div id="app">
+                <!-- CodeMirror 编辑器容器 -->
+                <textarea id="editor">// Write your code here</textarea>
             </div>
-		</div>
+            <div id="container"></div>
+            <button id="testbtn">测试</button>
+            <!-- Hello World -->
+        </div>
+        <!-- <script src="../node_modules/monaco-editor/min/vs/loader.js"></script>
+        <script src="./code.js"></script> -->
 
-		<script src="../node_modules/reveal.js/dist/reveal.js"></script>
-        <script src="../node_modules/reveal.js/plugin/markdown/markdown.js"></script>
-        <script src="../node_modules/reveal.js/plugin/highlight/highlight.js"></script>
-        <script src="../node_modules/reveal.js/plugin/notes/notes.js"></script>
-        <script src="../node_modules/reveal.js/plugin/math/math.js"></script>
 
-		<script>
+        <!-- 引入 CodeMirror 的核心 JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/codemirror.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/javascript/javascript.min.js"></script>
+        <script>
+            // 初始化 CodeMirror
+            const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+                mode: 'markdown',
+                theme: 'dracula',
+                lineNumbers: true,
+                height: window.innerHeight
+            });
+            const button = document.getElementById('testbtn');
+            button.addEventListener('click', () => {
 
-			Reveal.initialize({
-				controls: true,
-				progress: true,
-				history: true,
-				center: true,
-                view: 'scroll',
-				hash: true,
+                // 创建子元素
+                document.getElementById("slides").innerHTML += `<section data-background="#00ffff">
+                        <h2>你好世界！</h2>
+                    </section>`;
+                // Reveal.layout();
+            });
+        </script>
+        <div class="right">
+            <div class="reveal">
+                <div id="slides" class="slides">
 
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX ]
-			});
+                    <section data-background="#00ffff">
+                        <h2>data-background: #00ffdd</h2>
+                    </section>
 
-		</script>
+                    <section data-background="#bb00bb">
+                        <h2>data-background: #bb00bb</h2>
+                    </section>
 
-	</body>
+                    <section data-background-color="lightblue">
+                        <h2>data-background: lightblue</h2>
+                    </section>
+
+                    <section>
+                        <section data-background="#ff0000">
+                            <h2>data-background: #ff0000</h2>
+                        </section>
+                        <section data-background="rgba(0, 0, 0, 0.2)">
+                            <h2>data-background: rgba(0, 0, 0, 0.2)</h2>
+                        </section>
+                        <section data-background="salmon">
+                            <h2>data-background: salmon</h2>
+                        </section>
+                    </section>
+
+                    <section data-background="rgba(0, 100, 100, 0.2)">
+                        <section>
+                            <h2>Background applied to stack</h2>
+                        </section>
+                        <section>
+                            <h2>Background applied to stack</h2>
+                        </section>
+                        <section data-background="rgb(66, 66, 66)">
+                            <h2>Background applied to slide inside of stack</h2>
+                        </section>
+                    </section>
+
+                    <section data-background-transition="slide" data-background="assets/image1.png">
+                        <h2>Background image</h2>
+                    </section>
+
+                    <section>
+                        <section data-background-transition="slide" data-background="assets/image1.png">
+                            <h2>Background image</h2>
+                        </section>
+                        <section data-background-transition="slide" data-background="assets/image1.png">
+                            <h2>Background image</h2>
+                        </section>
+                    </section>
+
+                    <section data-background="assets/image2.png" data-background-size="100px"
+                        data-background-repeat="repeat" data-background-color="#111">
+                        <h2>Background image</h2>
+                        <pre>data-background-size="100px" data-background-repeat="repeat" data-background-color="#111"</pre>
+                    </section>
+
+                    <section data-background="#888888">
+                        <h2>Same background twice (1/2)</h2>
+                    </section>
+                    <section data-background="#888888">
+                        <h2>Same background twice (2/2)</h2>
+                    </section>
+
+                    <section
+                        data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm">
+                        <h2>Video background</h2>
+                    </section>
+
+                    <section
+                        data-background-iframe="https://slides.com/news/make-better-presentations/embed?style=hidden&autoSlide=4000">
+                        <h2>Iframe background</h2>
+                    </section>
+
+                    <section>
+                        <section data-background="#417203">
+                            <h2>Same background twice vertical (1/2)</h2>
+                        </section>
+                        <section data-background="#417203">
+                            <h2>Same background twice vertical (2/2)</h2>
+                        </section>
+                    </section>
+
+                    <section data-background="#934f4d">
+                        <h2>Same background from horizontal to vertical (1/3)</h2>
+                    </section>
+                    <section>
+                        <section data-background="#934f4d">
+                            <h2>Same background from horizontal to vertical (2/3)</h2>
+                        </section>
+                        <section data-background="#934f4d">
+                            <h2>Same background from horizontal to vertical (3/3)</h2>
+                        </section>
+                    </section>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../node_modules/reveal.js/dist/reveal.js"></script>
+    <script src="../node_modules/reveal.js/plugin/markdown/markdown.js"></script>
+    <script src="../node_modules/reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="../node_modules/reveal.js/plugin/notes/notes.js"></script>
+    <script src="../node_modules/reveal.js/plugin/math/math.js"></script>
+
+    <script>
+
+        Reveal.initialize({
+            controls: true,
+            progress: false,
+            history: true,
+            center: true,
+            hash: true,
+            // view:'scroll',
+            transition: 'linear',
+            height: window.innerHeight,
+            width: window.innerWidth * 0.5,
+            scrollActivationWidth: 100,
+            // view: undefined,
+
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
+        });
+
+    </script>
+
+</body>
+
 </html>
